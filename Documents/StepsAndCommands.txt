@@ -1,3 +1,5 @@
+STEPS AND COMMANDS
+
 1. Open Command Prompt
 
 2. npm install -g @vue/cli
@@ -6,7 +8,7 @@ Command used to install Vue.js
 3. vue create phonebook
 Command to create phonebook folder - project name
 
-4. Open link http://10.0.0.15:8080/
+4. Open link http://10.0.0.15:8080/ OR http://localhost:8080/
 Proved on the command prompt after file is created 
 
 5. Open folder "phonebook" in Visual Studio code
@@ -14,7 +16,7 @@ Proved on the command prompt after file is created
 6. Open "src", open "App.vue"
 This is the main file
 
-7. Open Terminal-(Ctrl+`)
+7. Open Terminal(Ctrl+`)
 
 8. npm run serve
 Comand used to run website
@@ -24,3 +26,12 @@ Comand used to install json-server
 
 10. npx json-server --watch db.json
 Command used to view database
+
+11. npm install axios
+Command to install JavaScript library for saving and retriving data
+
+12. http://localhost:3000/entries
+URL to view entries directory 
+
+13. http://localhost:3000/phonebooks
+URL to view phonebooks directory 
