@@ -55,25 +55,43 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
       activeTab: 'search',
       isDropdownOpen: false,
       name: '',
-      surname: '',
       phoneNumber: '',
       phonebookName: '',
     };
   },
   methods: {
-    addEntry() {
-      // Logic to add entry to phonebook
-      console.log('Adding entry:', this.name, this.surname, this.phoneNumber);
+    async addEntry() {
+      const newEntry = {
+        name: this.name,
+        phoneNumber: this.phoneNumber,
+      };
+
+      try {
+        const response = await axios.post('http://localhost:3000/entries', newEntry);
+        console.log('Entry added:', response.data);
+      } catch (error) {
+        console.error('Error adding entry:', error);
+      }
     },
-    addPhonebook() {
-      // Logic to add phonebook
-      console.log('Adding phonebook:', this.phonebookName);
+
+    async addPhonebook() {
+      const newPhonebook = {
+        phonebookName: this.phonebookName,
+      };
+
+      try {
+        const response = await axios.post('http://localhost:3000/phonebooks', newPhonebook);
+        console.log('Phonebook added:', response.data);
+      } catch (error) {
+        console.error('Error adding phonebook:', error);
+      }
     },
   },
 };

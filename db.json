@@ -1,19 +1,20 @@
 {
-  "posts": [
+  "entries": [
     {
-      "id": 1,
-      "title": "json-server",
-      "author": "typicode"
+      "name": "Toni",
+      "phoneNumber": "ioiejd",
+      "id": 1
+    },
+    {
+      "name": "mackyle",
+      "phoneNumber": "19",
+      "id": 2
     }
   ],
-  "comments": [
+  "phonebooks": [
     {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
+      "phonebookName": "toni",
+      "id": 1
     }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
