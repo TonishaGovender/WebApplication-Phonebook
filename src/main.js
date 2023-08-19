@@ -1,21 +1,25 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+// Import necessary modules and components
+import { createApp } from 'vue';
+import App from './App.vue';
 import "./main.js";
 import axios from "axios";
 
+// Export the default Vue component options
 export default {
+  // Data properties that will hold the component's state
   data() {
     return {
-      phonebooks: [],
-      selectedPhonebook: null,
-      entries: [],
-      nameInput: "",
-      numberInput: "",
-      newPhonebookInput: "",
-      phonebookFilter: "",
-      entryFilter: "",
+      phonebooks: [],           // Holds the list of phonebooks
+      selectedPhonebook: null,  // Holds the currently selected phonebook
+      entries: [],              // Holds the list of entries
+      nameInput: "",            // Holds the input value for entry name
+      numberInput: "",          // Holds the input value for entry number
+      newPhonebookInput: "",    // Holds the input value for new phonebook name
+      phonebookFilter: "",      // Holds the filter value for phonebooks
+      entryFilter: "",          // Holds the filter value for entries
     };
   },
+  // Computed properties that dynamically calculate values based on data
   computed: {
     filteredPhonebooks() {
       if (this.phonebookFilter) {
@@ -39,7 +43,9 @@ export default {
       }
     },
   },
+  // Methods that define the behavior of the component
   methods: {
+    // Function to open a specific tab by adding/removing "active" class
     openTab(tabName) {
       const tabContents = document.getElementsByClassName("tabcontent");
       for (const tabContent of tabContents) {
@@ -50,10 +56,12 @@ export default {
         selectedTabContent.classList.add("active");
       }
     },
+    // Function to select a phonebook and fetch its entries
     async selectPhonebook(phonebook) {
       this.selectedPhonebook = phonebook;
       await this.fetchEntriesForPhonebook(phonebook.id);
     },
+    // Function to fetch entries for a specific phonebook from the server
     async fetchEntriesForPhonebook(phonebookId) {
       try {
         const response = await axios.get(`http://localhost:3000/entries?phonebook=${phonebookId}`);
@@ -62,6 +70,7 @@ export default {
         console.error("Error fetching entries:", error);
       }
     },
+    // Function to save a new entry to the selected phonebook
     async saveEntry() {
       if (this.selectedPhonebook && this.nameInput && this.numberInput) {
         const newEntry = {
@@ -82,6 +91,7 @@ export default {
         }
       }
     },
+    // Function to add a new phonebook
     addPhonebook() {
       if (this.newPhonebookInput) {
         const newPhonebook = {
@@ -97,6 +107,7 @@ export default {
         });
       }
     },
+    // Function to fetch the list of phonebooks from the server
     async fetchPhonebooks() {
       try {
         const response = await axios.get("http://localhost:3000/phonebooks");
@@ -104,12 +115,13 @@ export default {
       } catch (error) {
         console.error("Error fetching phonebooks:", error);
       }
-     
     },
   },
+  // Lifecycle hook: This is called after the component is mounted on the DOM
   mounted() {
-    this.fetchPhonebooks();
+    this.fetchPhonebooks(); // Fetch phonebooks when the component is mounted
   },
 };
 
-createApp(App).mount('#app')
+// Create the Vue app and mount the root component to the specified element
+createApp(App).mount('#app');
