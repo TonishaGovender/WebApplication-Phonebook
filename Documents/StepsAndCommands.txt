@@ -27,6 +27,8 @@ Comand used to install json-server
 10. npx json-server --watch db.json
 Command used to view database
 
+NB. To run website and view database open another node on Terminal 
+
 11. npm install axios
 Command to install JavaScript library for saving and retriving data
 
