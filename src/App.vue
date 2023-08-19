@@ -49,7 +49,7 @@
       <input class="text-input" type="text" v-model="nameInput" placeholder="Name" required>
       <input class="text-input" type="tel" v-model="numberInput" placeholder="098-765-4321"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="12" 
-            require />
+            required />
       <button class="btn btn-primary" @click="saveEntry">Save</button>
     </form>
 

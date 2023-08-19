@@ -17,6 +17,12 @@
       "name": "Adrina Govender",
       "number": "073-635-8255",
       "id": 2
+    },
+    {
+      "phonebook": 1,
+      "name": "Tonisha Govender",
+      "number": "098-876-6542",
+      "id": 4
     }
   ],
   "phonebooks": [
@@ -28,6 +34,11 @@
     {
       "id": 2,
       "name": "Eblocks",
+      "entries": []
+    },
+    {
+      "id": 3,
+      "name": "Red",
       "entries": []
     }
   ]
