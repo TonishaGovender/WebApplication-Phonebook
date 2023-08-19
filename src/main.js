@@ -1,100 +1,115 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import "./main.js";
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      activeTab: 'search',
-      isDropdownOpen: false,
-      showMessage: false,
-      name: '',
-      phoneNumber: '',
-      phonebookName: '',
-      entries: [],
       phonebooks: [],
       selectedPhonebook: null,
+      entries: [],
+      nameInput: "",
+      numberInput: "",
+      newPhonebookInput: "",
+      phonebookFilter: "",
+      entryFilter: "",
     };
   },
+  computed: {
+    filteredPhonebooks() {
+      if (this.phonebookFilter) {
+        return this.phonebooks.filter(phonebook =>
+          phonebook.name.toLowerCase().includes(this.phonebookFilter.toLowerCase())
+        );
+      } else {
+        return [];
+      }
+    },
+    filteredEntries() {
+      if (this.entryFilter && this.selectedPhonebook) {
+        return this.selectedPhonebook.entries.filter(entry =>
+          entry.name.toLowerCase().includes(this.entryFilter.toLowerCase()) ||
+          entry.number.includes(this.entryFilter)
+        );
+      } else if (this.selectedPhonebook) {
+        return this.selectedPhonebook.entries;
+      } else {
+        return [];
+      }
+    },
+  },
   methods: {
-    async addEntry() {
-      const newEntry = {
-        name: this.name,
-        phoneNumber: this.phoneNumber,
-      };
-
-      try {
-        const response = await axios.post('http://localhost:3000/entries', newEntry);
-        console.log('Entry added:', response.data);
-        this.showMessage = true; 
-        setTimeout(() => {
-          this.showMessage = false; 
-          window.location.reload(); 
-        }, 6000); 
-      } catch (error) {
-        console.error('Error adding entry:', error);
+    openTab(tabName) {
+      const tabContents = document.getElementsByClassName("tabcontent");
+      for (const tabContent of tabContents) {
+        tabContent.classList.remove("active");
+      }
+      const selectedTabContent = document.getElementById(tabName);
+      if (selectedTabContent) {
+        selectedTabContent.classList.add("active");
       }
     },
-
-    async addPhonebook() {
-      const newPhonebook = {
-        phonebookName: this.phonebookName,
-      };
-
+    async selectPhonebook(phonebook) {
+      this.selectedPhonebook = phonebook;
+      await this.fetchEntriesForPhonebook(phonebook.id);
+    },
+    async fetchEntriesForPhonebook(phonebookId) {
       try {
-        const response = await axios.post('http://localhost:3000/phonebooks', newPhonebook);
-        console.log('Phonebook added:', response.data);
+        const response = await axios.get(`http://localhost:3000/entries?phonebook=${phonebookId}`);
+        this.selectedPhonebook.entries = response.data;
       } catch (error) {
-        console.error('Error adding phonebook:', error);
+        console.error("Error fetching entries:", error);
       }
     },
+    async saveEntry() {
+      if (this.selectedPhonebook && this.nameInput && this.numberInput) {
+        const newEntry = {
+          phonebook: this.selectedPhonebook,
+          name: this.nameInput,
+          number: this.numberInput,
+        };
 
-    async search() {
-      if (this.selectedPhonebook) {
         try {
-          const responseEntries = await axios.get('http://localhost:3000/entries');
-          const filteredEntries = responseEntries.data.filter(entry => {
-            const entryName = entry.name.toLowerCase();
-            const phonebook = this.phonebooks.find(pb => pb.id === this.selectedPhonebook);
-            const phonebookName = phonebook ? phonebook.phonebookName.toLowerCase() : '';
+          const response = await axios.post("http://localhost:3000/entries", newEntry);
+          console.log("Entry saved:", response.data);
 
-            const nameMatches = entryName.includes(this.searchName.toLowerCase());
-            const phonebookMatches = phonebookName.includes(this.searchName.toLowerCase());
-
-            return nameMatches || phonebookMatches;
-          });
-
-          // Update the entries with filtered results
-          this.entries = filteredEntries;
-
-          // Clear the selected phonebook and search name after search
-          this.selectedPhonebook = null;
-          this.searchName = '';
+          this.entries.push(newEntry);
+          this.nameInput = "";
+          this.numberInput = "";
         } catch (error) {
-          console.error('Error searching:', error);
+          console.error("Error saving entry:", error);
         }
       }
     },
-    async fetchData() {
-      try {
-        const responseEntries = await axios.get('http://localhost:3000/entries');
-        this.entries = responseEntries.data;
-        const responsePhonebooks = await axios.get('http://localhost:3000/phonebooks');
-        this.phonebooks = responsePhonebooks.data;
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    addPhonebook() {
+      if (this.newPhonebookInput) {
+        const newPhonebook = {
+          id: this.phonebooks.length + 1,
+          name: this.newPhonebookInput,
+          entries: [], // Initialize with an empty entries array
+        };
+        this.phonebooks.push(newPhonebook);
+
+        axios.post("http://localhost:3000/phonebooks", newPhonebook).then(response => {
+          console.log("Phonebook saved:", response.data);
+          this.newPhonebookInput = "";
+        });
       }
     },
+    async fetchPhonebooks() {
+      try {
+        const response = await axios.get("http://localhost:3000/phonebooks");
+        this.phonebooks = response.data;
+      } catch (error) {
+        console.error("Error fetching phonebooks:", error);
+      }
+     
+    },
   },
-  watch: {
-    selectedPhonebook: 'fetchData', // Watch for changes in selectedPhonebook and trigger fetchData
+  mounted() {
+    this.fetchPhonebooks();
   },
-  created() {
-  if (this.activeTab === 'search') {
-    this.fetchData();
-  }
-},
 };
 
 createApp(App).mount('#app')
